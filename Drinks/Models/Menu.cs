@@ -9,6 +9,6 @@ namespace Drinks.Models
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        public List<DrinkMenu> DrinkMenus { get; set; }    //= new List<DrinkMenu>();
+        public IEnumerable<DrinkMenu> DrinkMenus { get; set; }    //= new List<DrinkMenu>();
     }
 }

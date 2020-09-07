@@ -14,6 +14,6 @@ namespace Drinks.Models
         public int CategoryID { get; set; }
         public DrinkCategory Category { get; set; }
 
-        public List<DrinkMenu> DrinkMenus { get; set; }
+        public IEnumerable<DrinkMenu> DrinkMenus { get; set; }
     }
 }
