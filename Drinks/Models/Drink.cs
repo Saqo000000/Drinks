@@ -10,7 +10,6 @@ namespace Drinks.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        [MaxLength(5)]
         public string Description { get; set; }
 
 
