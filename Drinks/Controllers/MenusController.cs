@@ -151,11 +151,11 @@ namespace Drinks.Controllers
 
         public async Task<IActionResult> MenuRowContent(int id)
         {
-            IEnumerable<DrinkMenu> items =await _context.DrinkMenus.
+            IEnumerable<DrinkMenu> items = await _context.DrinkMenus.
                 Include(item => item.Drink).
                 Where(dm => dm.MenuID == id).ToListAsync();
-            Menu menu =await _context.Menus.SingleAsync(m => m.ID == id);
-            if (menu == null || items==null)
+            Menu menu = await _context.Menus.SingleAsync(m => m.ID == id);
+            if (menu == null || items == null)
             {
                 return NotFound();
             }
@@ -168,9 +168,54 @@ namespace Drinks.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> AddDrinkToMenu(int id)
+        {
+            Menu menu = await _context.Menus.SingleAsync(m => m.ID == id);
+            if (menu==null)
+            {
+                return NotFound();
+            }
+            IEnumerable<Drink> drinks = await _context.Drinks.ToListAsync();
+
+            return View(new AddDrinkToMenuViewModel(menu, drinks));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddDrinkToMenu(AddDrinkToMenuViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                int menuId = model.MenuId;
+                int drinkId = model.DrinkId;
+                if (MenuExists(menuId)&& DrinkExists(drinkId))
+                {
+                    if (!DrinkMenusExists(menuId,drinkId))
+                    {
+                        DrinkMenu drinkMenu = new DrinkMenu
+                        {
+                            DrinkID = drinkId,
+                            MenuID = menuId
+                        };
+                        await _context.DrinkMenus.AddAsync(drinkMenu);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+            }
+            return RedirectToAction(nameof(AddDrinkToMenu), model.MenuId);
+        }
         private bool MenuExists(int id)
         {
-            return _context.Menus.Any(e => e.ID == id);
+            return _context.Menus.Any(menu => menu.ID == id);
+        }
+        private bool DrinkExists(int id)
+        {
+            return _context.Drinks.Any(drink => drink.Id == id);
+        }
+        private bool DrinkMenusExists(int menuId,int drinkId)
+        {
+            return _context.DrinkMenus.Any(drink => drink.DrinkID == drinkId && drink.MenuID==menuId);
         }
     }
 }

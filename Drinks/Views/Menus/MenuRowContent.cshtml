@@ -4,29 +4,41 @@
     ViewData["Title"] = "MenuRowContent";
 }
 
-<h1>MenuRowContent</h1>
-
+<h1>@Model.Menu.Name</h1>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="AddDrinkToMenu" asp-controller="Menus" asp-route-id="@Model.Menu.ID">Add Drink</a>
 </p>
-<table class="table">
-    <thead>
-        @foreach (var item in Model.Items)
-        {
-            <tr>
-                <th>@item.Drink.Name</th>
-            </tr>
-        }
-    </thead>
-    <tbody>
-        @*@foreach (var item in Model.) {
-                    <tr>
-                        <td>
-                            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                        </td>
-                    </tr>
-            }*@
-    </tbody>
-</table>
+
+
+@if (Model.Items.Count() == 0)
+{
+    <p>
+        No menu items
+    </p>
+
+}
+else
+{
+    <table class="table">
+        <thead>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <th>@item.Drink.Name</th>
+                </tr>
+            }
+        </thead>
+        <tbody>
+            @*@foreach (var item in Model.) {
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                            </td>
+                        </tr>
+                }*@
+        </tbody>
+    </table>
+
+}
