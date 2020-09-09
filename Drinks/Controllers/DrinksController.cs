@@ -31,8 +31,7 @@ namespace Drinks.Controllers
             {
                 return NotFound();
             }
-
-            var drink = await _context.Drinks
+            Drink drink = await _context.Drinks
                 .Include(d => d.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (drink == null)

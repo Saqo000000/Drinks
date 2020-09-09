@@ -15,15 +15,12 @@
                 <select asp-for="DrinkId" class="form-control" asp-items="@Model.Drinks"></select>
                 <span asp-validation-for="DrinkId"></span>
             </div>
-            <input type="hidden" asp-for="MenuId" value="@Model.Menu.ID"/>
+            <input type="hidden" asp-for="MenuId" value="@Model.Menu.ID" />
             <div class="form-group">
                 <input type="submit" value="Add" class="btn btn-primary" />
+                <a asp-action="Index">Back to Menus</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 

@@ -5,40 +5,44 @@
 }
 
 <h1>@Model.Menu.Name</h1>
-<p>
-    <a asp-action="AddDrinkToMenu" asp-controller="Menus" asp-route-id="@Model.Menu.ID">Add Drink</a>
-</p>
-
 
 @if (Model.Items.Count() == 0)
 {
-    <p>
-        No menu items
+    <p class="text-danger">
+        There are no drinks in menu
     </p>
-
 }
 else
 {
     <table class="table">
         <thead>
+            <tr>
+                <th>Drink Names</th>
+                <th></th>
+            </tr>
+
+        </thead>
+        <tbody>
             @foreach (var item in Model.Items)
             {
                 <tr>
-                    <th>@item.Drink.Name</th>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Drink.Name)
+                    </td>
+                    <td>
+                        <a asp-action="Some action">
+                            <input type="submit" class="btn btn-warning" value="Change Didnt work">
+                        </a>
+                        <a asp-action="Some Action">
+                            <input type="submit" class="btn btn-danger" value="Delete Didnt Work">
+                        </a>
+                    </td>
                 </tr>
             }
-        </thead>
-        <tbody>
-            @*@foreach (var item in Model.) {
-                        <tr>
-                            <td>
-                                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                            </td>
-                        </tr>
-                }*@
         </tbody>
     </table>
-
 }
+
+<a asp-action="AddDrinkToMenu" asp-controller="Menus" asp-route-id="@Model.Menu.ID">
+    <input type="submit" class="btn btn-primary" value="Add Drink">
+</a>

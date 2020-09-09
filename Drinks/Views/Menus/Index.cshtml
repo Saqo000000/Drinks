@@ -4,11 +4,8 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Menu</h1>
+<h1>Menus</h1>
 
-<p>
-    <a asp-action="Create">Add Menu</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -19,19 +16,29 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-controller="Menus" asp-action="MenuRowContent" asp-route-id="@item.ID">
-                    @Html.DisplayFor(modelItem => item.Name)
-                </a>
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-controller="Menus" asp-action="MenuRowContent" asp-route-id="@item.ID">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </a>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">
+                        <input type="submit" class="btn btn-warning" value="Edit">
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.ID">
+                        <input type="submit" class="btn btn-info" value="Details">
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.ID">
+                        <input type="submit" class="btn btn-danger" value="Delete">
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<a asp-action="Create">
+    <input type="submit" class="btn btn-primary" value="Add New Menu">
+</a>

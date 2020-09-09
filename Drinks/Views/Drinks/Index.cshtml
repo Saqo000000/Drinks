@@ -13,7 +13,6 @@
     {
         <h1>Drinks</h1>
     }
-
 }
 
 <table class="table">
@@ -45,13 +44,20 @@
                     @Html.DisplayFor(modelItem => item.Category.Name)
                 </td>
                 <td>
-                    <button type="button" class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</button>
-                    <button type="button" class="btn btn-info" asp-action="Details" asp-route-id="@item.Id">Details</button>
-                    <button type="button" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</button>
+                    <a asp-action="Edit" asp-route-id="@item.Id">
+                        <input type="submit" class="btn btn-warning" value="Edit">
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.Id">
+                        <input type="submit" class="btn btn-info" value="Details">
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">
+                        <input type="submit" class="btn btn-danger" value="Delete">
+                    </a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-<button type="button" class="btn btn-warning" asp-action="Create">Add New Drink</button>
-
+<a asp-action="Create">
+    <input type="submit" class="btn btn-primary" value="Add New Drink">
+</a>
