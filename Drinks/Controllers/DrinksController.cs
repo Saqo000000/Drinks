@@ -116,17 +116,23 @@ namespace Drinks.Controllers
 
         public async Task<IActionResult> GetDrinksByCategoryId(int? id)
         {
-            if (id == null)
+            if (id == null || id<=0)
             {
                 return NotFound();
             }
 
-            var drink = await _context.Drinks.Where(drink => drink.CategoryID == id).Include(dr=>dr.Category).ToListAsync();
-            if (drink == null)
+            List<Drink> drinks = await _context.Drinks.Where(drink => drink.CategoryID == id).Include(dr=>dr.Category).ToListAsync();
+            if (drinks == null)
             {
                 return NotFound();
             }
-            return View("Index", drink);
+            ViewBag.Category = null;
+            foreach (Drink item in drinks)
+            {
+                ViewBag.Category = item.Category.Name;
+                break;
+            }
+            return View("Index", drinks);
         }
 
         public async Task<IActionResult> Delete(int? id)
