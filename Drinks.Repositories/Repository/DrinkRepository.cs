@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Drinks.Data.Migrations
+namespace Drinks.Repositories.Repository
 {
-    class Class1
+    class DrinkRepository
     {
     }
 }

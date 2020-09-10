@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Drinks.Data;
 using Drinks.Models;
-using Drinks.ViewModels;
+using Drinks.Data.Data;
+using Drinks.Models.Models;
+using Drinks.Models.ViewModels;
 
 namespace Drinks.Controllers
 {
