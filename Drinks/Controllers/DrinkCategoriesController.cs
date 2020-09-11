@@ -9,21 +9,23 @@ using Drinks.Data;
 using Drinks.Models;
 using Drinks.Data.Data;
 using Drinks.Models.Models;
+using Drinks.Repositories.Interfaces;
 
 namespace Drinks.Controllers
 {
     public class DrinkCategoriesController : Controller
     {
-        private readonly DrinkDbContext _context;
 
-        public DrinkCategoriesController(DrinkDbContext context)
+        private readonly IDrinkCategoryRepository  drinkCategoryRepository;
+
+        public DrinkCategoriesController(IDrinkCategoryRepository  drinkCategoryRepository)
         {
-            _context = context;
+            this.drinkCategoryRepository = drinkCategoryRepository;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            return View(await drinkCategoryRepository.GetAllCategories());
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -33,8 +35,7 @@ namespace Drinks.Controllers
                 return NotFound();
             }
 
-            var drinkCategory = await _context.Categories
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var drinkCategory = await drinkCategoryRepository.GetCategoryById(id);
             if (drinkCategory == null)
             {
                 return NotFound();
@@ -54,8 +55,7 @@ namespace Drinks.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(drinkCategory);
-                await _context.SaveChangesAsync();
+                await drinkCategoryRepository.AddDrinkCategory(drinkCategory);
                 return RedirectToAction(nameof(Index));
             }
             return View(drinkCategory);
@@ -68,7 +68,7 @@ namespace Drinks.Controllers
                 return NotFound();
             }
 
-            var drinkCategory = await _context.Categories.FindAsync(id);
+            DrinkCategory drinkCategory = await drinkCategoryRepository.GetCategoryById(id);
             if (drinkCategory == null)
             {
                 return NotFound();
@@ -89,12 +89,11 @@ namespace Drinks.Controllers
             {
                 try
                 {
-                    _context.Update(drinkCategory);
-                    await _context.SaveChangesAsync();
+                    await drinkCategoryRepository.UpdateDrinkCategory(drinkCategory);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DrinkCategoryExists(drinkCategory.ID))
+                    if (!drinkCategoryRepository.DrinkCategoryExists(drinkCategory.ID))
                     {
                         return NotFound();
                     }
@@ -115,8 +114,7 @@ namespace Drinks.Controllers
                 return NotFound();
             }
 
-            var drinkCategory = await _context.Categories
-                .FirstOrDefaultAsync(m => m.ID == id);
+            DrinkCategory drinkCategory = await drinkCategoryRepository.GetCategoryById(id);
             if (drinkCategory == null)
             {
                 return NotFound();
@@ -129,15 +127,13 @@ namespace Drinks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var drinkCategory = await _context.Categories.FindAsync(id);
-            _context.Categories.Remove(drinkCategory);
-            await _context.SaveChangesAsync();
+            if (drinkCategoryRepository.DrinkCategoryExists(id))
+            {
+                DrinkCategory drinkCategory = await drinkCategoryRepository.GetCategoryById(id);
+                await drinkCategoryRepository.RemoveDrinkCategory(drinkCategory);
+                return RedirectToAction(nameof(Index));
+            }
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool DrinkCategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.ID == id);
         }
     }
 }
