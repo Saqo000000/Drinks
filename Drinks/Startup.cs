@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Drinks.Data;
 using Drinks.Data.Data;
+using Drinks.Repositories.RepositoryInjections;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +32,8 @@ namespace Drinks
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DrinkConnectionStrin"));
             });
+            services.AddDIDrink();
+            services.AddDIDrinkCategory();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -7,22 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Drinks.Data.Data;
 using Drinks.Models.Models;
+using Drinks.Repositories.Interfaces;
 
 namespace Drinks.Controllers
 {
     public class DrinksController : Controller
     {
-        private readonly DrinkDbContext _context;
+        private readonly IDrinkRepository drinkRepository;
+        private readonly IDrinkCategoryRepository categoryRepository;
 
-        public DrinksController(DrinkDbContext context)
+
+        public DrinksController(IDrinkRepository repository, IDrinkCategoryRepository categoryRepository)
         {
-            _context = context;
+            this.drinkRepository = repository;
+            this.categoryRepository = categoryRepository;
         }
 
         public async Task<IActionResult> Index()
         {
-            var drinkDbContext = _context.Drinks.Include(d => d.Category);
-            return View(await drinkDbContext.ToListAsync());
+            return View(await drinkRepository.GetAllDrinksWithCategory());
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -31,9 +34,7 @@ namespace Drinks.Controllers
             {
                 return NotFound();
             }
-            Drink drink = await _context.Drinks
-                .Include(d => d.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            Drink drink=await drinkRepository.GetAllDrinkWithCategoryById(id);
             if (drink == null)
             {
                 return NotFound();
@@ -41,25 +42,24 @@ namespace Drinks.Controllers
 
             return View(drink);
         }
-
+        
         public IActionResult Create()
         {
-            ViewBag.Category = new SelectList(_context.Categories, "ID", "Name");
+            ViewBag.Category = categoryRepository.GetAllCategoriesAsSelectList();
             return View();
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,CategoryID")] Drink drink)
         {
             if (ModelState.IsValid)
             {
-                _context.Drinks.Add(drink);
-                await _context.SaveChangesAsync();
+                await drinkRepository.AddDrink(drink);
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Category = new SelectList(_context.Categories, "ID", "Name");
+            ViewBag.Category = categoryRepository.GetAllCategoriesAsSelectList();
             return View(drink);
         }
 
@@ -70,16 +70,16 @@ namespace Drinks.Controllers
                 return NotFound();
             }
 
-            var drink = await _context.Drinks.FindAsync(id);
+            Drink drink = await drinkRepository.GetDrinkById(id);
             if (drink == null)
             {
                 return NotFound();
             }
-            ViewBag.Category = new SelectList(_context.Categories, "ID", "Name");
+            ViewBag.Category = categoryRepository.GetAllCategoriesAsSelectList();
             return View(drink);
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,CategoryID")] Drink drink)
@@ -93,12 +93,11 @@ namespace Drinks.Controllers
             {
                 try
                 {
-                    _context.Update(drink);
-                    await _context.SaveChangesAsync();
+                    await drinkRepository.UpdateDrink(drink);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DrinkExists(drink.Id))
+                    if (!drinkRepository.DrinkExists(drink.Id))
                     {
                         return NotFound();
                     }
@@ -109,18 +108,18 @@ namespace Drinks.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Category = new SelectList(_context.Categories, "ID", "Name", drink.CategoryID);
+            ViewBag.Category = categoryRepository.GetAllCategoriesAsSelectList();
             return View(drink);
         }
 
         public async Task<IActionResult> GetDrinksByCategoryId(int? id)
         {
-            if (id == null || id<=0)
+            if (id == null || id <= 0)
             {
                 return NotFound();
             }
 
-            List<Drink> drinks = await _context.Drinks.Where(drink => drink.CategoryID == id).Include(dr=>dr.Category).ToListAsync();
+            List<Drink> drinks = await drinkRepository.GetDrinksByCategoryId(id);
             if (drinks == null)
             {
                 return NotFound();
@@ -140,32 +139,21 @@ namespace Drinks.Controllers
             {
                 return NotFound();
             }
-
-            var drink = await _context.Drinks
-                .Include(d => d.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            Drink drink = await drinkRepository.GetDrinkForRemove(id);
             if (drink == null)
             {
                 return NotFound();
             }
-
             return View(drink);
         }
 
-        
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var drink = await _context.Drinks.FindAsync(id);
-            _context.Drinks.Remove(drink);
-            await _context.SaveChangesAsync();
+            await drinkRepository.RemoveDrink(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool DrinkExists(int id)
-        {
-            return _context.Drinks.Any(e => e.Id == id);
         }
     }
 }

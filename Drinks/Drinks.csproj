@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Drinks.Data\Drinks.Data.csproj" />
-    <ProjectReference Include="..\Drinks.Models\Drinks.Models.csproj" />
+    <ProjectReference Include="..\Drinks.Repositories\Drinks.Repositories.csproj" />
   </ItemGroup>
 
 </Project>
