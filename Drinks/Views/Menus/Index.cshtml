@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Drinks.Models.Menu>
+﻿@model IEnumerable<Drinks.Models.Models.Menu>
 
 @{
     ViewData["Title"] = "Index";
@@ -25,7 +25,7 @@
                     </a>
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">
+                    <a asp-action="Edit" asp-controller="Menus" asp-route-id="@item.ID">
                         <input type="submit" class="btn btn-warning" value="Edit">
                     </a>
                     <a asp-action="Details" asp-route-id="@item.ID">

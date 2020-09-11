@@ -17,5 +17,9 @@ namespace Drinks.Repositories.RepositoryInjections
         {
             services.AddTransient<IDrinkCategoryRepository, DrinkCategoryRepository>();
         }
+        public static void AddDIMenu(this IServiceCollection services)
+        {
+            services.AddTransient<IMenuRepository,MenuRepository>();
+        }
     }
 }
